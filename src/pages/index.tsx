@@ -1,5 +1,7 @@
 import React, { MutableRefObject } from "react";
 import { ContentBuilder } from "../components/ContentBuilder";
+import { Portal } from "../components/portal/Portal";
+import { SearchPanel } from "../components/portal/SearchBox";
 
 const Divider = ({ children }: { children: React.ReactNode }) => {
   return <div className="grid  grid-cols-2">{children}</div>;
@@ -44,8 +46,8 @@ const Logo = () => (
   </div>
 );
 
-const NavBarButton = ({ children }: { children: string }) => (
-  <button className="h-9 bg-[#026FFA] px-5 rounded-md text-white text-lg mr-5">
+const NavBarButton = ({ children,onClick }: { children: string,onClick?:React.DOMAttributes<HTMLButtonElement>["onClick"] }) => (
+  <button onClick={onClick} className="h-9 bg-[#026FFA] px-5 rounded-md text-white text-lg mr-5">
     {children}
   </button>
 );
@@ -204,69 +206,81 @@ const AdvanceOptionInput = ({ title }: { title: string }) => {
 };
 
 function App() {
+  const [overlay, setOverlay] = React.useState(false);
   return (
-    <Divider>
-      <div className="h-full w-full border-r border-[#DFDFDF]">
-        <NavBar>
-          <div className="flex items-center gap-4">
-            <HamBurger />
-            <Logo />
-          </div>
-          <div className="flex items-center">
-            <NavBarButton>Apply</NavBarButton>
-          </div>
-        </NavBar>
-        <div className="flex   w-full">
-          <div className=" pt-3 text-xl h-fit border-r border-b ">
-            <div className="pl-7 font-medium py-4 ">Entities</div>
-            <SideButton>Cause List</SideButton>
-            <SideButton>Litigations</SideButton>
-            <SideButton>Customer Complaints</SideButton>
-            <SideButton>Technical Details</SideButton>
-            <SideButton>Approvals</SideButton>
-            <SideButton>Buildings</SideButton>
-            <SideButton>Project</SideButton>
-            <SideButton>Promoters</SideButton>
-          </div>
-          <div className="pt-3 w-full ">
-            <div className=" pb-7 border-b px-7">
-              <div className="py-4  font-medium text-xl">Filter</div>
-              <div className="text-lg">Search for a keyword</div>
-              <input className="border px-3 text-xl py-2 mt-3 w-full rounded-md  " />
+    <React.Fragment>
+      <Portal BackDropvisible={overlay} setBackDropVisible={setOverlay}>
+        {(closing,setClosing)=><SearchPanel placeholderText="Name your Alert" closing={closing} setClosing={setClosing} >
+        Give this alert a name
+          </SearchPanel>}
+      </Portal>
+      <Divider>
+        <div className="h-full w-full border-r border-[#DFDFDF]">
+          <NavBar>
+            <div className="flex items-center gap-4">
+              <HamBurger />
+              <Logo />
             </div>
+            <div className="flex items-center">
+              <NavBarButton>Apply</NavBarButton>
+            </div>
+          </NavBar>
+          <div className="flex   w-full">
+            <div className=" pt-3 text-xl h-fit border-r border-b ">
+              <div className="pl-7 font-medium py-4 ">Entities</div>
+              <SideButton>Cause List</SideButton>
+              <SideButton>Litigations</SideButton>
+              <SideButton>Customer Complaints</SideButton>
+              <SideButton>Technical Details</SideButton>
+              <SideButton>Approvals</SideButton>
+              <SideButton>Buildings</SideButton>
+              <SideButton>Project</SideButton>
+              <SideButton>Promoters</SideButton>
+            </div>
+            <div className="pt-3 w-full ">
+              <div className=" pb-7 border-b px-7">
+                <div className="py-4  font-medium text-xl">Filter</div>
+                <div className="text-lg">Search for a keyword</div>
+                <input className="border px-3 text-xl py-2 mt-3 w-full rounded-md  " />
+              </div>
 
-            <div className="px-7">
-              <div className="py-4  font-medium text-xl">Advanced Filters</div>
-              <AdvanceCalenderPicker title="Date of Hearing" />
-              <AdvanceCalenderPicker title="Last Date of Hearing" />
-              <AdvanceCalenderPicker title="Date of Cause List Publication" />
-              <AdvanceOptionInput title="Stage" />
-              <AdvanceOptionInput title="Court" />
-              <AdvanceOptionInput title="Advocate Name" />
-              <AdvanceOptionInput title="Promoter Name" />
+              <div className="px-7">
+                <div className="py-4  font-medium text-xl">
+                  Advanced Filters
+                </div>
+                <AdvanceCalenderPicker title="Date of Hearing" />
+                <AdvanceCalenderPicker title="Last Date of Hearing" />
+                <AdvanceCalenderPicker title="Date of Cause List Publication" />
+                <AdvanceOptionInput title="Stage" />
+                <AdvanceOptionInput title="Court" />
+                <AdvanceOptionInput title="Advocate Name" />
+                <AdvanceOptionInput title="Promoter Name" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="h-full w-full ">
-        <NavBar>
-          <div className="ml-7">
-            <div className="text-2xl font-medium">Results</div>
-          </div>
-          <div className="flex items-center">
-            <NavBarButton>Start Tracking</NavBarButton>
-          </div>
-        </NavBar>
-        <div className="pt-3  ">
-          <div className="pl-7 py-4  text-lg text-[#6B6B6B]">
-            Showing top 3 results
-          </div>
-          <div className="px-7 ">
-            <DummyContentRender />
+        <div className="h-full w-full ">
+          <NavBar>
+            <div className="ml-7">
+              <div className="text-2xl font-medium">Results</div>
+            </div>
+            <div className="flex items-center">
+              <NavBarButton onClick={()=>{
+                  setOverlay(true)
+              }}>Start Tracking</NavBarButton>
+            </div>
+          </NavBar>
+          <div className="pt-3  ">
+            <div className="pl-7 py-4  text-lg text-[#6B6B6B]">
+              Showing top 3 results
+            </div>
+            <div className="px-7 ">
+              <DummyContentRender />
+            </div>
           </div>
         </div>
-      </div>
-    </Divider>
+      </Divider>
+    </React.Fragment>
   );
 }
 
