@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { ContentBuilder } from "../components/ContentBuilder";
 
 const Divider = ({ children }: { children: React.ReactNode }) => {
@@ -17,7 +17,7 @@ const NavBar = ({ children }: { children: React.ReactNode }) => {
 
 const SideButton = ({ children }: { children: string }) => {
   return (
-    <button className="pl-7 w-full pr-4 py-4 flex items-center justify-between">
+    <button className="pl-7 w-full pr-4 py-4 flex text-left items-center xl:w-80  justify-between">
       {children}
       <img src="https://strapi.web3p.in/uploads/chevron_right_4f2156d4d3.svg" />
     </button>
@@ -118,8 +118,92 @@ const DummyContentRender = () => {
   );
 };
 
+const AdvanceCalenderPicker = ({ title }: { title: string }) => {
+  return (
+    <div className="mb-5">
+      <div className="mb-4 text-lg">{title}</div>
+      <div className="flex mt-3 justify-between text-[#A7A7A7] w-full">
+        <div className="border flex px-2 py-2 justify-between  2xl:w-48  rounded-md w-36">
+          FROM
+          <img src="https://strapi.web3p.in/uploads/calendar2_date_74c3bc3c74.svg?updated_at=2023-01-18T09:21:42.789Z" />
+        </div>
+        <div className="border flex px-2 py-2 justify-between  2xl:w-48 rounded-md w-36">
+          TO
+          <img src="https://strapi.web3p.in/uploads/calendar2_date_74c3bc3c74.svg?updated_at=2023-01-18T09:21:42.789Z" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const AdvanceOptionInput = ({ title }: { title: string }) => {
+  const [overlay, setOverlay] = React.useState(false);
+  const [filter_type, setFilterType] = React.useState<
+    "contains" | "does not contains"
+  >("contains");
+  const modalRef = React.useRef() as MutableRefObject<HTMLDivElement>;
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        setOverlay(false);
+      }
+    };
+    if (overlay) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [overlay]);
+
+  return (
+    <div className="mb-5">
+      <div className="text-lg">
+        {title}
+        <button
+          onClick={() => {
+            setOverlay(!overlay);
+          }}
+          className="inline-flex relative items-center gap-2 text-sm ml-2 text-primary"
+        >
+          {overlay && (
+            <div
+              ref={modalRef}
+              className="absolute text-black rounded-md border-[#CACACA] border top-full py-1   bg-white w-max shadow-xl px-4"
+            >
+              <button
+                onClick={() => {
+                  setFilterType((prev) => "contains");
+                }}
+                className="my-1 hover:text-primary hover:transition-all transition-all"
+              >
+                contains
+              </button>
+              <button
+                onClick={() => {
+                  setFilterType((prev) => "does not contains");
+                }}
+                className="my-1 block  hover:text-primary hover:transition-all transition-all"
+              >
+                does not contains
+              </button>
+            </div>
+          )}
+
+          {filter_type}
+          <img src="https://strapi.web3p.in/uploads/chevron_down_5d05db4669.svg?updated_at=2023-01-18T09:21:20.603Z" />
+        </button>
+      </div>
+      <input className="border  text-xl py-2 mt-3 rounded-md px-3 w-full" />
+    </div>
+  );
+};
+
 function App() {
-  const [selected, setSelected] = React.useState([]);
   return (
     <Divider>
       <div className="h-full w-full border-r border-[#DFDFDF]">
@@ -134,7 +218,7 @@ function App() {
         </NavBar>
         <div className="flex   w-full">
           <div className=" pt-3 text-xl h-fit border-r border-b ">
-            <div className="pl-7 font-medium py-4 w-80">Entities</div>
+            <div className="pl-7 font-medium py-4 ">Entities</div>
             <SideButton>Cause List</SideButton>
             <SideButton>Litigations</SideButton>
             <SideButton>Customer Complaints</SideButton>
@@ -144,70 +228,22 @@ function App() {
             <SideButton>Project</SideButton>
             <SideButton>Promoters</SideButton>
           </div>
-          <div className="pt-3  w-full">
-            <div className="border-b pb-7 px-7">
+          <div className="pt-3 w-full ">
+            <div className=" pb-7 border-b px-7">
               <div className="py-4  font-medium text-xl">Filter</div>
               <div className="text-lg">Search for a keyword</div>
-              <input className="border  text-xl py-2 mt-3 rounded-md px-1 w-full" />
+              <input className="border px-3 text-xl py-2 mt-3 w-full rounded-md  " />
             </div>
+
             <div className="px-7">
               <div className="py-4  font-medium text-xl">Advanced Filters</div>
-              <div>
-                <div>Date of Hearing</div>
-                <div className="flex mt-3 justify-between text-[#A7A7A7] w-full mb-3">
-                  <div className="border flex px-2 py-2 justify-between rounded-md w-40">
-                    FROM
-                    <img src="https://strapi.web3p.in/uploads/calendar2_date_74c3bc3c74.svg?updated_at=2023-01-18T09:21:42.789Z" />
-                  </div>
-                  <div className="border flex px-2 justify-between  rounded-md py-2 w-40">
-                    TO
-                    <img src="https://strapi.web3p.in/uploads/calendar2_date_74c3bc3c74.svg?updated_at=2023-01-18T09:21:42.789Z" />
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div>Last Date of Hearing</div>
-                <div className="flex mt-3 justify-between text-[#A7A7A7] w-full mb-3">
-                  <div className="border flex px-2 py-2 justify-between rounded-md w-40">
-                    FROM
-                    <img src="https://strapi.web3p.in/uploads/calendar2_date_74c3bc3c74.svg?updated_at=2023-01-18T09:21:42.789Z" />
-                  </div>
-                  <div className="border flex px-2 justify-between  rounded-md py-2 w-40">
-                    TO
-                    <img src="https://strapi.web3p.in/uploads/calendar2_date_74c3bc3c74.svg?updated_at=2023-01-18T09:21:42.789Z" />
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div>Date of Cause List Publication</div>
-                <div className="flex mt-3 justify-between text-[#A7A7A7] w-full mb-3">
-                  <div className="border flex px-2 py-2 justify-between rounded-md w-40">
-                    FROM
-                    <img src="https://strapi.web3p.in/uploads/calendar2_date_74c3bc3c74.svg?updated_at=2023-01-18T09:21:42.789Z" />
-                  </div>
-                  <div className="border flex px-2 justify-between  rounded-md py-2 w-40">
-                    TO
-                    <img src="https://strapi.web3p.in/uploads/calendar2_date_74c3bc3c74.svg?updated_at=2023-01-18T09:21:42.789Z" />
-                  </div>
-                </div>
-              </div>
-              <div>
-              <div className="text-lg">Stage<button className="inline-flex items-center gap-2 text-sm ml-2 text-primary">contains <img src="https://strapi.web3p.in/uploads/chevron_down_5d05db4669.svg?updated_at=2023-01-18T09:21:20.603Z" /></button></div>
-              <input className="border  text-xl py-2 mt-3 rounded-md px-1 w-full" />
-              </div>
-              <div>
-              <div className="text-lg">Court<button className="inline-flex items-center gap-2 text-sm ml-2 text-primary">contains <img src="https://strapi.web3p.in/uploads/chevron_down_5d05db4669.svg?updated_at=2023-01-18T09:21:20.603Z" /></button></div>
-              <input className="border  text-xl py-2 mt-3 rounded-md px-1 w-full" />
-              </div>
-              <div>
-              <div className="text-lg">Advocate Name<button className="inline-flex items-center gap-2 text-sm ml-2 text-primary">contains <img src="https://strapi.web3p.in/uploads/chevron_down_5d05db4669.svg?updated_at=2023-01-18T09:21:20.603Z" /></button></div>
-              <input className="border  text-xl py-2 mt-3 rounded-md px-1 w-full" />
-              </div>
-              <div>
-              <div className="text-lg">Promoter Name<button className="inline-flex items-center gap-2 text-sm ml-2 text-primary">contains <img src="https://strapi.web3p.in/uploads/chevron_down_5d05db4669.svg?updated_at=2023-01-18T09:21:20.603Z" /></button></div>
-              <input className="border  text-xl py-2 mt-3 rounded-md px-1 w-full" />
-              </div>
+              <AdvanceCalenderPicker title="Date of Hearing" />
+              <AdvanceCalenderPicker title="Last Date of Hearing" />
+              <AdvanceCalenderPicker title="Date of Cause List Publication" />
+              <AdvanceOptionInput title="Stage" />
+              <AdvanceOptionInput title="Court" />
+              <AdvanceOptionInput title="Advocate Name" />
+              <AdvanceOptionInput title="Promoter Name" />
             </div>
           </div>
         </div>
