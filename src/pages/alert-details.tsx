@@ -1,7 +1,7 @@
 import React from 'react';
 import AlertDetailList from '../components/AlertDetailList';
 import { ContentBuilder } from '../components/ContentBuilder';
-import Temp from '../components/Temp';
+import AlertTable from '../components/AlertTable';
 // import PageLayout from '../components/PageLayout';
 
 const alertDetails = () => {
@@ -32,7 +32,7 @@ const alertDetails = () => {
 				]}
 				heading={'Alert Details'}
 			/>
-			<Temp />
+			<AlertTable />
 			{/* </PageLayout> */}
 		</div>
 	);

@@ -114,12 +114,9 @@ const CollapsableComponent = ({
 			<div
 				className={`-my-5 pl-8 ${
 					isVisible
-						? 'grid grid-cols-2  transition duration-1000 ease-in -mt-10'
+						? 'grid grid-cols-2  transition duration-1000 ease-in'
 						: 'hidden transition duration-1000 ease-in'
 				} `}>
-				{/* // style={{ */}
-				{/* // 	gridTemplateColumns: isVisible ? '2fr 1fr' : '', */}
-				{/* // }}> */}
 				<ContentBuilder
 					Type='RERA Project'
 					Head='Ninad Dere'
@@ -131,7 +128,7 @@ const CollapsableComponent = ({
 	);
 };
 
-export default function Temp() {
+export default function AlertTable() {
 	return (
 		<div className='max-w-[100%] border-[#CACACA] border-l-slate-900'>
 			<div className='sm:flex sm:items-center'>
