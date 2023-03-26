@@ -2,9 +2,10 @@ import React, { MutableRefObject } from "react";
 import { ContentBuilder } from "../components/ContentBuilder";
 import { Portal } from "../components/portal/Portal";
 import { SearchPanel } from "../components/portal/SearchBox";
+import { AdvancedFilter } from "../FiltersComponent";
 
 const Divider = ({ children }: { children: React.ReactNode }) => {
-  return <div className="grid  grid-cols-2">{children}</div>;
+  return <div className="lg:grid   lg:grid-cols-2">{children}</div>;
 };
 
 const NavBar = ({ children }: { children: React.ReactNode }) => {
@@ -14,15 +15,6 @@ const NavBar = ({ children }: { children: React.ReactNode }) => {
         {children}
       </div>
     </div>
-  );
-};
-
-const SideButton = ({ children }: { children: string }) => {
-  return (
-    <button className="pl-7 w-full pr-4 py-4 flex text-left items-center xl:w-80  justify-between">
-      {children}
-      <img src="https://strapi.web3p.in/uploads/chevron_right_4f2156d4d3.svg" />
-    </button>
   );
 };
 
@@ -46,8 +38,17 @@ const Logo = () => (
   </div>
 );
 
-const NavBarButton = ({ children,onClick }: { children: string,onClick?:React.DOMAttributes<HTMLButtonElement>["onClick"] }) => (
-  <button onClick={onClick} className="h-9 bg-[#026FFA] px-5 rounded-md text-white text-lg mr-5">
+const NavBarButton = ({
+  children,
+  onClick,
+}: {
+  children: string;
+  onClick?: React.DOMAttributes<HTMLButtonElement>["onClick"];
+}) => (
+  <button
+    onClick={onClick}
+    className="h-9 bg-[#026FFA] px-5 rounded-md text-white text-lg mr-5"
+  >
     {children}
   </button>
 );
@@ -138,7 +139,7 @@ const AdvanceCalenderPicker = ({ title }: { title: string }) => {
   );
 };
 
-const AdvanceOptionInput = ({ title }: { title: string }) => {
+const AdvanceOptionInput = ({ title, allowBottomOverlay }: { title: string, allowBottomOverlay?: boolean }) => {
   const [overlay, setOverlay] = React.useState(false);
   const [filter_type, setFilterType] = React.useState<
     "contains" | "does not contains"
@@ -162,21 +163,54 @@ const AdvanceOptionInput = ({ title }: { title: string }) => {
     };
   }, [overlay]);
 
+  const [BackDropvisible, setBackDropvisible] = React.useState(false);
+
   return (
     <div className="mb-5">
       <div className="text-lg">
         {title}
         <button
           onClick={() => {
+            if (allowBottomOverlay) {
+              setBackDropvisible(!BackDropvisible);
+            }
             setOverlay(!overlay);
+
           }}
           className="inline-flex relative items-center gap-2 text-sm ml-2 text-primary"
         >
           {overlay && (
-            <div
-              ref={modalRef}
-              className="absolute text-black rounded-md border-[#CACACA] border top-full py-1   bg-white w-max shadow-xl px-4"
+            allowBottomOverlay ? <>
+              <Portal BackDropvisible={BackDropvisible} setBackDropVisible={setBackDropvisible}>
+                {(closing, setClosing) => (
+                  <>
+                    {/* <SearchPanel
+            placeholderText="Name your Alert"
+            closing={closing}
+            setClosing={setClosing}
             >
+            Give this alert a name
+          </SearchPanel> */}
+                    <div className={`fixed bottom-0 h-28 ${closing ? `md:scale-75  md:translate-y-0 translate-y-48 opacity-0` : ``} w-full bg-white rounded-t-lg p-5`}>
+                      <button onClick={()=>{
+                        setClosing(true)
+                        setFilterType((prev) => "contains");
+                      }} className={`${filter_type == "contains" ? "text-black" : "text-secondary"} block text-lg mb-2`}>
+                      contains
+                    </button>
+                      <button onClick={()=>{
+                         setClosing(true)
+                         setFilterType((prev) => "does not contains");
+                      }} className={`${filter_type == "does not contains" ? "text-black" : "text-secondary"} block text-lg`}>
+                        does not contains
+                      </button>
+                    </div>
+                  </>
+                )}
+              </Portal></> : <div
+                ref={modalRef}
+                className="absolute text-black rounded-md border-[#CACACA] border top-full py-1   bg-white w-max shadow-xl px-4"
+              >
               <button
                 onClick={() => {
                   setFilterType((prev) => "contains");
@@ -194,6 +228,7 @@ const AdvanceOptionInput = ({ title }: { title: string }) => {
                 does not contains
               </button>
             </div>
+
           )}
 
           {filter_type}
@@ -205,81 +240,192 @@ const AdvanceOptionInput = ({ title }: { title: string }) => {
   );
 };
 
+const SideButton = ({
+  children,
+  onClick,
+}: {
+  children: string;
+  onClick?: (value: string) => any;
+}) => {
+  return (
+    <button
+      onClick={() => {
+        onClick && onClick(children);
+      }}
+      className="pl-7 w-full pr-4 py-4 flex text-left items-center xl:w-80  justify-between"
+    >
+      {children}
+      <img src="https://strapi.web3p.in/uploads/chevron_right_4f2156d4d3.svg" />
+    </button>
+  );
+};
+
+const EntityOption = ({ fnClick }: { fnClick?: (value: any) => any }) => (
+  <div className=" pt-3 text-xl h-fit border-r border-b ">
+    <div className="pl-7 font-medium py-4 ">Entities</div>
+    <div className="text-[#314250]">
+      <SideButton onClick={fnClick}>Cause List</SideButton>
+      <SideButton onClick={fnClick}>Litigations</SideButton>
+      <SideButton onClick={fnClick}>Customer Complaints</SideButton>
+      <SideButton onClick={fnClick}>Technical Details</SideButton>
+      <SideButton onClick={fnClick}>Approvals</SideButton>
+      <SideButton onClick={fnClick}>Buildings</SideButton>
+      <SideButton onClick={fnClick}>Project</SideButton>
+      <SideButton onClick={fnClick}>Promoters</SideButton>
+    </div>
+  </div>
+);
+
+const AdvanceFilterPanel = ({ allowBottomOverlay }: { allowBottomOverlay?: boolean }) => {
+
+  return (
+    <div className="pt-3 w-full ">
+      <div className=" pb-7 border-b px-7">
+        <div className="py-4  font-medium text-xl">Filter</div>
+        <div className="text-lg">Search for a keyword</div>
+        <input className="border px-3 text-xl py-2 mt-3 w-full rounded-md  " />
+      </div>
+
+      <div className="px-7">
+        <div className="py-4  font-medium text-xl">Advanced Filters</div>
+        <AdvanceCalenderPicker title="Date of Hearing" />
+        <AdvanceCalenderPicker title="Last Date of Hearing" />
+        <AdvanceCalenderPicker title="Date of Cause List Publication" />
+        <AdvanceOptionInput allowBottomOverlay={allowBottomOverlay} title="Stage" />
+        <AdvanceOptionInput allowBottomOverlay={allowBottomOverlay} title="Court" />
+        <AdvanceOptionInput allowBottomOverlay={allowBottomOverlay} title="Advocate Name" />
+        <AdvanceOptionInput allowBottomOverlay={allowBottomOverlay} title="Promoter Name" />
+      </div>
+    </div>
+  );
+};
+
+const BottomApplyPanel = ({onClick}:{onClick?:()=>any}) => {
+  return (
+    <div className="w-full h-16  fixed z-20 bg-white bottom-0 rounded-lg border flex">
+      <button className="text-secondary  w-full text-xl">Clear</button>
+      <div className="bg-[#EEEEEE] my-auto w-1 h-[60%]"></div>
+      <button onClick={onClick} className="text-xl w-full text-primary">Apply</button>
+    </div>
+  );
+};
+
 function App() {
   const [overlay, setOverlay] = React.useState(false);
+  const [filter_type, setFilterType] = React.useState(null);
+  const [currentScreen, setCurrentScreen] = React.useState(0);
+  const [selectedEntity, setSelectedEntity] = React.useState(null);
   return (
     <React.Fragment>
       <Portal BackDropvisible={overlay} setBackDropVisible={setOverlay}>
-        {(closing,setClosing)=><SearchPanel placeholderText="Name your Alert" closing={closing} setClosing={setClosing} >
-        Give this alert a name
-          </SearchPanel>}
+        {(closing, setClosing) => (
+          <SearchPanel
+            placeholderText="Name your Alert"
+            closing={closing}
+            setClosing={setClosing}
+          >
+            Give this alert a name
+          </SearchPanel>
+        )}
       </Portal>
-      <Divider>
-        <div className="h-full w-full border-r border-[#DFDFDF]">
+      <div className="flex flex-col h-screen lg:h-fit">
+        <Divider>
           <NavBar>
             <div className="flex items-center gap-4">
               <HamBurger />
               <Logo />
             </div>
-            <div className="flex items-center">
+            <div className="hidden lg:flex items-center ">
               <NavBarButton>Apply</NavBarButton>
             </div>
           </NavBar>
-          <div className="flex   w-full">
-            <div className=" pt-3 text-xl h-fit border-r border-b ">
-              <div className="pl-7 font-medium py-4 ">Entities</div>
-              <SideButton>Cause List</SideButton>
-              <SideButton>Litigations</SideButton>
-              <SideButton>Customer Complaints</SideButton>
-              <SideButton>Technical Details</SideButton>
-              <SideButton>Approvals</SideButton>
-              <SideButton>Buildings</SideButton>
-              <SideButton>Project</SideButton>
-              <SideButton>Promoters</SideButton>
-            </div>
-            <div className="pt-3 w-full ">
-              <div className=" pb-7 border-b px-7">
-                <div className="py-4  font-medium text-xl">Filter</div>
-                <div className="text-lg">Search for a keyword</div>
-                <input className="border px-3 text-xl py-2 mt-3 w-full rounded-md  " />
+          <div className="hidden lg:block  ">
+            <NavBar>
+              <div className="ml-7">
+                <div className="text-2xl font-medium">Results</div>
               </div>
-
-              <div className="px-7">
-                <div className="py-4  font-medium text-xl">
-                  Advanced Filters
+              <div className="flex items-center">
+                <NavBarButton
+                  onClick={() => {
+                    setOverlay(true);
+                  }}
+                >
+                  Start Tracking
+                </NavBarButton>
+              </div>
+            </NavBar>
+          </div>
+        </Divider>
+        <div className="grow ">
+          <div className="h-full lg:grid   lg:grid-cols-2">
+            <div className="h-full w-full ">
+              {/* <CompleteNavBar/> */}
+              <div className="lg:hidden h-full w-full ">
+                {filter_type == null ? (
+                  <>
+                    {currentScreen == 0 && (
+                      <div className="h-full w-full flex justify-center items-center">
+                        <div className="items-center flex flex-col">
+                          <div className="w-fit text-2xl">Select Filters</div>
+                          <div className="w-fit mt-4 text-secondary text-xl">
+                            Apply Filters to get started
+                          </div>
+                          <button
+                            onClick={() => {
+                              setCurrentScreen((prev) => 1);
+                            }}
+                            className="bg-primary mt-4 text-white p-3 rounded-md w-fit "
+                          >
+                            Select Category
+                          </button>
+                        </div>{" "}
+                      </div>
+                    )}
+                    {currentScreen == 1 && (
+                      <>
+                        <EntityOption
+                          fnClick={(entity) => {
+                            setSelectedEntity(entity);
+                            setCurrentScreen((prev) => 2);
+                          }}
+                        />
+                      </>
+                    )}
+                    {currentScreen == 2 && (
+                      <>
+                        <div className="mb-20">
+                          <AdvanceFilterPanel allowBottomOverlay />{" "}
+                        </div>{" "}
+                        <BottomApplyPanel onClick={()=>{
+                          setFilterType(selectedEntity)
+                        }} />
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <><DummyContentRender/></>
+                )}
+              </div>
+              <div className="lg:block hidden">
+                <div className="pt-3  ">
+                  <div className="pl-7 py-4  text-lg text-[#6B6B6B]">
+                    Showing top 3 results
+                  </div>
+                  <div className="px-7 ">
+                    <DummyContentRender />
+                  </div>
                 </div>
-                <AdvanceCalenderPicker title="Date of Hearing" />
-                <AdvanceCalenderPicker title="Last Date of Hearing" />
-                <AdvanceCalenderPicker title="Date of Cause List Publication" />
-                <AdvanceOptionInput title="Stage" />
-                <AdvanceOptionInput title="Court" />
-                <AdvanceOptionInput title="Advocate Name" />
-                <AdvanceOptionInput title="Promoter Name" />
+              </div>
+            </div>
+            <div className="h-full hidden lg:block order-first w-full border-r border-[#DFDFDF]">
+              <div className="flex  w-full">
+                <EntityOption />
+                <AdvanceFilterPanel />
               </div>
             </div>
           </div>
         </div>
-        <div className="h-full w-full ">
-          <NavBar>
-            <div className="ml-7">
-              <div className="text-2xl font-medium">Results</div>
-            </div>
-            <div className="flex items-center">
-              <NavBarButton onClick={()=>{
-                  setOverlay(true)
-              }}>Start Tracking</NavBarButton>
-            </div>
-          </NavBar>
-          <div className="pt-3  ">
-            <div className="pl-7 py-4  text-lg text-[#6B6B6B]">
-              Showing top 3 results
-            </div>
-            <div className="px-7 ">
-              <DummyContentRender />
-            </div>
-          </div>
-        </div>
-      </Divider>
+      </div>
     </React.Fragment>
   );
 }

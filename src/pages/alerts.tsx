@@ -225,7 +225,7 @@ const Table = () => {
         </div>
         {/* Mobile View */}
         <div>
-
+                          
         </div>
       </div>
     </div>
