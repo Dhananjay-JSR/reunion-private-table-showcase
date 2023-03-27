@@ -18,6 +18,7 @@ const alertDetails = () => {
 					{
 						name: 'Filters',
 						type: 'tags',
+						colspan: '1',
 						value: [
 							'(asdd)Rustomjee',
 							'Promoters',
@@ -26,14 +27,17 @@ const alertDetails = () => {
 						],
 					},
 					{
+						colspan: '1',
 						name: 'Date Created',
 						value: ['26-12-2022'],
 					},
 				]}
 				heading={'Alert Details'}
 			/>
-			<AlertTable />
-			{/* </PageLayout> */}
+			<div className='p-5'>
+				<AlertTable heading='Alert History' />
+				{/* </PageLayout> */}
+			</div>
 		</div>
 	);
 };

@@ -1,0 +1,164 @@
+import { createColumnHelper, flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
+import React from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { MobileViewer } from '../GroupTable/GroupTable';
+import TableRows from './Row';
+import TableHeader from './TableHeader';
+import ToggleComponent from './ToggleComponent';
+
+const TableWrapper = ({
+	heading,
+	children,
+}: {
+	heading?: string | undefined;
+	children: any;
+}) => {
+	return (
+		<div className=''>
+			{heading && (
+				<h1 className='text-xl font-semibold text-gray-900 px-5 pt-5 md:px-0 md:pt-0'>{heading}</h1>
+			)}
+			<DndProvider backend={HTML5Backend}>
+				{children}
+			</DndProvider>
+		</div>
+	);
+};
+
+type TableProps = {
+	heading?: string | undefined;
+	column: any;
+	data: any;
+	options?: {
+		columnSortable?: boolean;
+		toggleColumns?: boolean;
+		rowDND?: boolean;
+	}
+};
+
+/**
+ * Props:
+ *  @param columnSortable - to sort by clicking on column
+ *  @param rowDnD - to enable row drag and drop
+ *  @param colDnD - to enable Column drag and drop
+ *  @param columnVisibility - to enable column visibility feature i.e. show/hide columns
+ */
+const Table = ({ heading, column, data, options }: TableProps) => {
+	const ColumnHelper = createColumnHelper<typeof data[0]>();
+	// console.log(da);
+	// @ts-ignore
+	// Grouping column headers if their keys match
+	const columnData = column.reduce((acc, curr) => {
+		// this is the column data
+		if (curr.headerGroup) {
+			// checks if the column has a header group
+			// @ts-ignore
+			const group = acc.find((el) => el.id === curr.headerGroup); // checks if the header group already exists
+			if (group) {
+				// if the header group already exists
+				// @ts-ignore
+				group.columns.push(
+					ColumnHelper.accessor(curr.key, {
+						// adds the column to the header group
+						id: curr.key,
+						header: curr.title,
+					})
+				);
+			} else {
+				// if the header group does not exist
+				acc.push(
+					// @ts-ignore
+					ColumnHelper.group({
+						id: curr.headerGroup,
+						header: curr.headerGroup,
+						columns: [
+							ColumnHelper.accessor(curr.key, {
+								id: curr.key,
+								header: curr.title,
+							}),
+						],
+					})
+				);
+			}
+		} else {
+			// if the column does not have a header group
+			acc.push(
+				// @ts-ignore
+				ColumnHelper.accessor(curr.key, {
+					id: curr.key,
+					header: curr.title,
+				})
+			);
+		}
+		return acc;
+	}, []);
+
+	const [rows, setRows] = React.useState([...data]);
+	const [sorting, setSorting] = React.useState<SortingState>([])
+	const [columnVisibility, setColumnVisibility] = React.useState({});
+	const { columnSortable, toggleColumns, rowDND } = options || {};
+	const table = useReactTable({
+		data: rows,
+		columns: columnData,
+		state: {
+			sorting, columnVisibility,
+		},
+		getCoreRowModel: getCoreRowModel(),
+
+		onSortingChange: columnSortable ? setSorting : undefined,
+		getSortedRowModel: columnSortable ? getSortedRowModel() : undefined,
+		onColumnVisibilityChange: toggleColumns ? setColumnVisibility : undefined,
+
+		// Subcomponent 
+		getExpandedRowModel: getSortedRowModel(),
+		getRowCanExpand: (row) => true,
+
+		// Debugging
+		debugTable: true,
+		// debugHeaders: true,
+		// debugColumns: true,
+	});
+
+	const reorderRow = (draggedRowIndex: number, targetRowIndex: number) => {
+		data.splice(targetRowIndex, 0, data.splice(draggedRowIndex, 1)[0] as any)
+		setRows([...data])
+	}
+
+	return (
+		<TableWrapper heading={heading}>
+			<div className='hidden md:block'>
+				{/* Toggle columns */}
+				{toggleColumns ? <ToggleComponent table={table} /> : null}
+
+				<table className={`w-full border-separate border-[#CACACA]  border rounded-md  border-spacing-0 select-none ${!toggleColumns ? 'mt-10' : 'mt-4'}`}>
+
+					<TableHeader table={table} columnSortable={columnSortable} />
+					<tbody>
+						<TableRows table={table} reorderRow={reorderRow} rowDND={rowDND} />
+					</tbody>
+				</table>
+			</div>
+
+			{/* Mobile devices */}
+			<div className='md:hidden pt-10 px-5'>
+				<div className='bg-white border rounded-md  shadow overflow-hidden md:rounded-md '>
+					<ul role='list' className='divide-y divide-gray-200'>
+						{data.map((row: any, index: number) => {
+							// data of the table (array of objects)
+							return (
+								<MobileViewer
+									row={row}
+									column={column}
+									key={index}
+								/>
+							);
+						})}
+					</ul>
+				</div>
+			</div>
+		</TableWrapper>
+	);
+};
+
+export default Table;
