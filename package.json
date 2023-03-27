@@ -16,9 +16,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@tanstack/react-table": "^8.7.9",
     "gatsby": "^5.7.0",
     "gatsby-source-graphql": "^5.7.0",
     "react": "^18.2.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
