@@ -41,6 +41,7 @@ type TableProps = {
 		toggleColumns?: boolean;
 		rowDND?: boolean;
 		columnSplitting?: boolean;
+		stickyHeaders?: boolean;
 	};
 };
 
@@ -113,7 +114,8 @@ const Table = ({ heading, column, data, options }: TableProps) => {
 	const [columnVisibility, setColumnVisibility] = React.useState({});
 	const [columnPinning, setColumnPinning] = React.useState({});
 	const [isSplit, setIsSplit] = React.useState(false);
-	const { columnSortable, toggleColumns, rowDND, columnSplitting } = options || {};
+	const { columnSortable, toggleColumns, rowDND, columnSplitting } =
+		options || {};
 
 	const table = useReactTable({
 		data: rows,
@@ -164,10 +166,10 @@ const Table = ({ heading, column, data, options }: TableProps) => {
 								checked={isSplit}
 								onChange={(e) => {
 									if (table.getIsSomeColumnsPinned())
-										setIsSplit(e.target.checked)
+										setIsSplit(e.target.checked);
 									else {
-										setIsSplit(false)
-										alert("pin some columns first")
+										setIsSplit(false);
+										alert('pin some columns first');
 									}
 								}}
 							/>{' '}
@@ -182,6 +184,7 @@ const Table = ({ heading, column, data, options }: TableProps) => {
 						columnSortable={columnSortable}
 						reorderRow={reorderRow}
 						rowDND={rowDND}
+						stickyHeaders={options?.stickyHeaders}
 					/>
 				) : (
 					<SingleTable

@@ -61,6 +61,76 @@ const example = () => {
 			alert_date: '26-12-2022, 5:13 PM',
 			delivery_date: '26-12-2022, 5:13 PM',
 			delivery_status: 'Failed',
+		},
+		{
+			alert_date: '26-12-2022, 5:13 PM',
+			delivery_date: '26-12-2022, 5:13 PM',
+			delivery_status: 'Failed',
+		},
+		{
+			alert_date: '26-12-2022, 5:13 PM',
+			delivery_date: '26-12-2022, 5:13 PM',
+			delivery_status: 'Failed',
+		},
+		{
+			alert_date: '26-12-2022, 5:13 PM',
+			delivery_date: '26-12-2022, 5:13 PM',
+			delivery_status: 'Failed',
+		},
+		{
+			alert_date: '26-12-2022, 5:13 PM',
+			delivery_date: '26-12-2022, 5:13 PM',
+			delivery_status: 'Failed',
+		},
+		{
+			alert_date: '26-12-2022, 5:13 PM',
+			delivery_date: '26-12-2022, 5:13 PM',
+			delivery_status: 'Failed',
+		},
+		{
+			alert_date: '26-12-2022, 5:13 PM',
+			delivery_date: '26-12-2022, 5:13 PM',
+			delivery_status: 'Failed',
+		},
+		{
+			alert_date: '26-12-2022, 5:13 PM',
+			delivery_date: '26-12-2022, 5:13 PM',
+			delivery_status: 'Failed',
+		},
+		{
+			alert_date: '26-12-2022, 5:13 PM',
+			delivery_date: '26-12-2022, 5:13 PM',
+			delivery_status: 'Failed',
+		},
+		{
+			alert_date: '26-12-2022, 5:13 PM',
+			delivery_date: '26-12-2022, 5:13 PM',
+			delivery_status: 'Failed',
+		},
+		{
+			alert_date: '26-12-2022, 5:13 PM',
+			delivery_date: '26-12-2022, 5:13 PM',
+			delivery_status: 'Failed',
+		},
+		{
+			alert_date: '26-12-2022, 5:13 PM',
+			delivery_date: '26-12-2022, 5:13 PM',
+			delivery_status: 'Failed',
+		},
+		{
+			alert_date: '26-12-2022, 5:13 PM',
+			delivery_date: '26-12-2022, 5:13 PM',
+			delivery_status: 'Failed',
+		},
+		{
+			alert_date: '26-12-2022, 5:13 PM',
+			delivery_date: '26-12-2022, 5:13 PM',
+			delivery_status: 'Failed',
+		},
+		{
+			alert_date: '26-12-2022, 5:13 PM',
+			delivery_date: '26-12-2022, 5:13 PM',
+			delivery_status: 'Failed',
 			childComponentName: [
 				'ContentBuilder',
 				'ContentBuilder',
@@ -89,12 +159,18 @@ const example = () => {
 	return (
 		<PageLayout>
 			{/* <Table heading='My Table' column={col} data={data} /> */}
-			<Table heading='MyTable' column={col} data={data} options={{
-				columnSortable: true,
-				rowDND: true,
-				toggleColumns: true,
-				columnSplitting: true,
-			}} />
+			<Table
+				heading='MyTable'
+				column={col}
+				data={data}
+				options={{
+					columnSortable: true,
+					rowDND: true,
+					toggleColumns: true,
+					columnSplitting: true,
+					stickyHeaders: true,
+				}}
+			/>
 		</PageLayout>
 	);
 };
