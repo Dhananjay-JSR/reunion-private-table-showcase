@@ -3,22 +3,15 @@ import React, { FC, Fragment } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { ContentBuilder } from '../ContentBuilder';
 import { ChevRight } from '../icons/Icons';
-import {
-	useRowSelect,
-	HeaderCellSelect,
-	CellSelect,
-} from '@table-library/react-table-library/select';
-
 // // type RowProps = {
 // //     id: number,
 // // }
 
-const TableRows: FC<{
-	table: any;
-	reorderRow?: any;
-	rowDND?: boolean;
-	pinned?: number;
-}> = ({ table, reorderRow, rowDND, pinned }) => {
+const TableRows: FC<{ table: any; reorderRow?: any; rowDND?: boolean }> = ({
+	table,
+	reorderRow,
+	rowDND,
+}) => {
 	return table.getRowModel().rows.map((row: any, idx: number) => {
 		const [, dropRef] = useDrop({
 			accept: 'row',
@@ -39,30 +32,15 @@ const TableRows: FC<{
 				<tr
 					ref={previewRef} //previewRef could go here
 					style={{ opacity: isDragging ? 0.5 : 1 }}
-					className={`border-b ${isDragging ? 'bg-gray-100' : ''}`}>
+					className={`border-b ${isDragging ? 'bg-gray-100' : ''}`}
+					{...{ onClick: row.getToggleExpandedHandler() }}>
 					<td
-						className='flex p-5'
 						ref={dropRef}
 						style={{
 							width: '50px',
 							textAlign: 'center',
 						}}>
 						<button ref={dragRef}>🟰</button>
-						<div
-							className=''
-							onClick={() => {
-								console.log(row.getIsSelected());
-							}}>
-							<input
-								type='checkbox'
-								{...{
-									checked: row.getIsSelected(),
-									disabled: !row.getCanSelect(),
-									indeterminate: row.getIsSomeSelected(),
-									onChange: row.getToggleSelectedHandler(),
-								}}
-							/>
-						</div>
 					</td>
 					{row
 						.getVisibleCells()
@@ -77,7 +55,6 @@ const TableRows: FC<{
 										key={cell.id}
 										getCanExpand={() => false}
 										reorderRow={reorderRow}
-										pinned={pinned}
 									/>
 								</>
 							);
@@ -125,15 +102,11 @@ export const ReactTableRow: FC<{
 	index: number;
 	getCanExpand: any;
 	reorderRow: any;
-	pinned?: number;
-}> = ({ cell, row, index, reorderRow, pinned }) => {
+}> = ({ cell, row, index, reorderRow }) => {
 	// console.log(cell.row.original);
 	return (
 		<td
-			{...{ onClick: row.getToggleExpandedHandler() }}
-			className={`
-			${pinned === index ? 'sticky left-0 z-1' : ''}
-			${row.original.childData ? 'cursor-pointer' : ''} ${
+			className={`${row.original.childData ? 'cursor-pointer' : ''} ${
 				cell.column.parent?.columns
 					.map((item: any) => item.id)
 					.indexOf(cell.column.id) == 0
@@ -166,12 +139,7 @@ export const ReactTableRow: FC<{
 					) : (
 						<span className='pr-6' />
 					)}
-					<span>
-						{flexRender(
-							cell.column.columnDef.cell,
-							cell.getContext()
-						)}
-					</span>
+					{flexRender(cell.column.columnDef.cell, cell.getContext())}
 				</div>
 			</div>
 		</td>
