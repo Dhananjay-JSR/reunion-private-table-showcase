@@ -7,12 +7,14 @@ const TableHeader = ({
 	columnSplitting,
 	stickyHeaders,
 	rowDND,
+	pinned,
 }: {
 	table: any;
 	columnSortable: boolean | undefined;
 	columnSplitting?: boolean;
 	rowDND?: boolean;
 	stickyHeaders?: boolean;
+	pinned?: number;
 }) => {
 	return (
 		<thead
@@ -33,6 +35,7 @@ const TableHeader = ({
 										key={`${header.id}-${index2}`}
 										colSpan={header.colSpan}
 										className={` align-top py-3 pl-11
+										
                           ${
 								index == 0 && header.colSpan != 1
 									? 'border-l border-b' // checks if it is the first row and it is not a group
@@ -74,7 +77,12 @@ const TableHeader = ({
 											header.colSpan == 1
 												? 'text-left'
 												: 'text-center'
-										} first:rounded-tl-md last:rounded-tr-md   border-[#CACACA] font-normal text-[#6B6B6B] w-fit border-b`}>
+										} first:rounded-tl-md last:rounded-tr-md   border-[#CACACA] font-normal text-[#6B6B6B] w-fit border-b ${
+											// COLUMN STICKY HERE
+											pinned === index2
+												? 'sticky left-0 bg-[#F8FBFF] z-1'
+												: ''
+										}`}>
 										{
 											<div
 												// Uncomment this to Add sort by column feature

@@ -2,6 +2,7 @@ import React from 'react';
 import TableHeader from '../TableHeader';
 import TableRows from '../Row';
 import { Table } from '@tanstack/react-table';
+import { useRowSelect } from '@table-library/react-table-library/select';
 
 const SingleTable = ({
 	table,
@@ -16,6 +17,7 @@ const SingleTable = ({
 }) => {
 	const { columnSortable, toggleColumns, rowDND, stickyHeaders } =
 		options || {};
+	const pinned = 0;
 	return (
 		<table
 			className={`w-full border-separate border-[#CACACA]  border rounded-md  border-spacing-0 ${
@@ -27,12 +29,14 @@ const SingleTable = ({
 				columnSplitting={columnSplitting}
 				stickyHeaders={stickyHeaders}
 				rowDND={rowDND}
+				pinned={pinned}
 			/>
 			<tbody>
 				<TableRows
 					table={table}
 					reorderRow={reorderRow}
 					rowDND={rowDND}
+					pinned={pinned}
 				/>
 			</tbody>
 		</table>

@@ -3,15 +3,22 @@ import React, { FC, Fragment } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { ContentBuilder } from '../ContentBuilder';
 import { ChevRight } from '../icons/Icons';
+import {
+	useRowSelect,
+	HeaderCellSelect,
+	CellSelect,
+} from '@table-library/react-table-library/select';
+
 // // type RowProps = {
 // //     id: number,
 // // }
 
-const TableRows: FC<{ table: any; reorderRow?: any; rowDND?: boolean }> = ({
-	table,
-	reorderRow,
-	rowDND,
-}) => {
+const TableRows: FC<{
+	table: any;
+	reorderRow?: any;
+	rowDND?: boolean;
+	pinned?: number;
+}> = ({ table, reorderRow, rowDND, pinned }) => {
 	return table.getRowModel().rows.map((row: any, idx: number) => {
 		const [, dropRef] = useDrop({
 			accept: 'row',
@@ -55,6 +62,7 @@ const TableRows: FC<{ table: any; reorderRow?: any; rowDND?: boolean }> = ({
 										key={cell.id}
 										getCanExpand={() => false}
 										reorderRow={reorderRow}
+										pinned={pinned}
 									/>
 								</>
 							);
@@ -102,11 +110,14 @@ export const ReactTableRow: FC<{
 	index: number;
 	getCanExpand: any;
 	reorderRow: any;
-}> = ({ cell, row, index, reorderRow }) => {
+	pinned?: number;
+}> = ({ cell, row, index, reorderRow, pinned }) => {
 	// console.log(cell.row.original);
 	return (
 		<td
-			className={`${row.original.childData ? 'cursor-pointer' : ''} ${
+			className={`
+			${pinned === index ? 'sticky left-0 bg-white z-1' : ''}
+			${row.original.childData ? 'cursor-pointer' : ''} ${
 				cell.column.parent?.columns
 					.map((item: any) => item.id)
 					.indexOf(cell.column.id) == 0
@@ -139,7 +150,12 @@ export const ReactTableRow: FC<{
 					) : (
 						<span className='pr-6' />
 					)}
-					{flexRender(cell.column.columnDef.cell, cell.getContext())}
+					<span>
+						{flexRender(
+							cell.column.columnDef.cell,
+							cell.getContext()
+						)}
+					</span>
 				</div>
 			</div>
 		</td>

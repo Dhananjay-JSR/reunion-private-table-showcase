@@ -5,13 +5,36 @@ import {
 	SortingState,
 	useReactTable,
 } from '@tanstack/react-table';
-import React from 'react';
+import React, { HTMLProps, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { MobileViewer } from '../GroupTable/GroupTable';
 import ToggleComponent from './ToggleComponent';
 import SingleTable from './SingleTable/SingleTable';
 import MultipleTables from './MultipleTables/MultipleTables';
+
+export function IndeterminateCheckbox({
+	indeterminate,
+	className = '',
+	...rest
+}: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
+	const ref = React.useRef<HTMLInputElement>(null!);
+
+	React.useEffect(() => {
+		if (typeof indeterminate === 'boolean') {
+			ref.current.indeterminate = !rest.checked && indeterminate;
+		}
+	}, [ref, indeterminate]);
+
+	return (
+		<input
+			type='checkbox'
+			ref={ref}
+			className={className + ' cursor-pointer'}
+			{...rest}
+		/>
+	);
+}
 
 const TableWrapper = ({
 	heading,
@@ -116,6 +139,8 @@ const Table = ({ heading, column, data, options }: TableProps) => {
 	const [isSplit, setIsSplit] = React.useState(false);
 	const { columnSortable, toggleColumns, rowDND, columnSplitting } =
 		options || {};
+	const [rowSelection, setRowSelection] = React.useState({});
+	const [globalFilter, setGlobalFilter] = React.useState('');
 
 	const table = useReactTable({
 		data: rows,
@@ -138,6 +163,10 @@ const Table = ({ heading, column, data, options }: TableProps) => {
 		getRowCanExpand: (row) => true,
 		onColumnPinningChange: setColumnPinning,
 
+		// Row selection
+		enableRowSelection: true,
+		onRowSelectionChange: setRowSelection,
+
 		// Debugging
 		debugTable: true,
 		// debugHeaders: true,
@@ -153,47 +182,61 @@ const Table = ({ heading, column, data, options }: TableProps) => {
 		setRows([...data]);
 	};
 
+	useEffect(() => {
+		// console.log('columnData', columnData);
+		// console.log('row', table.getPreFilteredRowModel().rows);
+	});
+
 	return (
 		<TableWrapper heading={heading}>
 			<div className='hidden md:block select-none h-full'>
 				{/* Toggle columns */}
 				{toggleColumns ? <ToggleComponent table={table} /> : null}
-				{columnSplitting ? (
-					<div className='su pt-5'>
-						<label>
-							<input
-								type='checkbox'
-								checked={isSplit}
-								onChange={(e) => {
-									if (table.getIsSomeColumnsPinned())
-										setIsSplit(e.target.checked);
-									else {
-										setIsSplit(false);
-										alert('pin some columns first');
-									}
-								}}
-							/>{' '}
-							Split Mode
-						</label>
+				<div className='flex justify-between items-center pt-5'>
+					{columnSplitting ? (
+						<div className='su pt-5'>
+							<label>
+								<input
+									type='checkbox'
+									checked={isSplit}
+									onChange={(e) => {
+										if (table.getIsSomeColumnsPinned())
+											setIsSplit(e.target.checked);
+										else {
+											setIsSplit(false);
+											alert('pin some columns first');
+										}
+									}}
+								/>{' '}
+								Split Mode
+							</label>
+						</div>
+					) : null}
+					<div>
+						{Object.keys(rowSelection).length} of{' '}
+						{table.getPreFilteredRowModel().rows.length} Total Rows
+						Selected
 					</div>
-				) : null}
-
-				{columnSplitting && isSplit ? (
-					<MultipleTables
-						table={table}
-						columnSortable={columnSortable}
-						reorderRow={reorderRow}
-						rowDND={rowDND}
-						stickyHeaders={options?.stickyHeaders}
-					/>
-				) : (
-					<SingleTable
-						table={table}
-						reorderRow={reorderRow}
-						options={options}
-						columnSplitting={columnSplitting}
-					/>
-				)}
+				</div>
+				{/* <div className='overflow-x-scroll w-[50%] relative'> */}
+				<div className='overflow-x-scroll w-full relative'>
+					{columnSplitting && isSplit ? (
+						<MultipleTables
+							table={table}
+							columnSortable={columnSortable}
+							reorderRow={reorderRow}
+							rowDND={rowDND}
+							stickyHeaders={options?.stickyHeaders}
+						/>
+					) : (
+						<SingleTable
+							table={table}
+							reorderRow={reorderRow}
+							options={options}
+							columnSplitting={columnSplitting}
+						/>
+					)}
+				</div>
 			</div>
 
 			{/* Mobile devices */}
