@@ -36,84 +36,41 @@ const TableRows: FC<{
 
 		return (
 			<Fragment key={row.id}>
-				<tr
-					ref={previewRef} //previewRef could go here
-					style={{ opacity: isDragging ? 0.5 : 1 }}
-					className={`border-b ${isDragging ? 'bg-gray-100' : ''}`}>
-					<td
-						className='flex p-5'
-						ref={dropRef}
-						style={{
-							width: '50px',
-							textAlign: 'center',
-						}}>
-						<button ref={dragRef}>🟰</button>
-						<div
-							className=''
-							onClick={() => {
-								console.log(row.getIsSelected());
-							}}>
-							<input
-								type='checkbox'
-								{...{
-									checked: row.getIsSelected(),
-									disabled: !row.getCanSelect(),
-									indeterminate: row.getIsSomeSelected(),
-									onChange: row.getToggleSelectedHandler(),
-								}}
-							/>
-						</div>
-					</td>
-					{row
-						.getVisibleCells()
-						// @ts-ignore
-						.map((cell, index) => {
-							return (
-								<>
-									<ReactTableRow
-										cell={cell}
-										row={row}
-										index={index}
-										key={cell.id}
-										getCanExpand={() => false}
-										reorderRow={reorderRow}
-										pinned={pinned}
-									/>
-								</>
-							);
-						})}
-				</tr>
-				{row.getCanExpand() && row.getIsExpanded()
-					? row.original.childComponentName?.map(
-							(child: any, index: number) => {
-								// console.log(row);
-								return (
-									<tr
-										className={`cursor-pointer `}
-										key={`index ${index}`}>
-										<td colSpan={2}>
-											{/* // @ts-ignore */}
-											<div className='w-[85%]'>
-												<ChildComponentHandler
-													name={
-														row.original
-															.childComponentName[
-															index
-														]
-													}
-													data={
-														row.original.childData[
-															index
-														]
-													}
-												/>
-											</div>
-										</td>
-									</tr>
-								);
-							}
-					  )
-					: null}
+				 <tr key={row.id}>
+                  {row.getVisibleCells().map((cell:any, index:number) => {
+                    console.log();
+                    return (
+                      <td
+                        className={`${
+                          cell.column.parent?.columns
+                            .map((item:any) => item.id)
+                            .indexOf(cell.column.id) == 0
+                            ? "border-l " // checks if it is the first column of the group
+                            : ""
+                        }
+                    ${
+                      cell.column.parent?.columns &&
+                      cell.column.parent?.columns
+                        .map((item:any) => item.id)
+                        .indexOf(cell.column.id) ==
+                        cell.column.parent?.columns.length - 1 && // checks if it is the last column of the group
+                      row.getVisibleCells()[index + 1] && //Edge Case: When Group is Last Column
+                      row.getVisibleCells()[index + 1].column.parent?.columns ==
+                        undefined
+                        ? "border-r " // checks if it is the last column of the group and the next column is not a group
+                        : " "
+                    }
+                     pl-4 border-[#7A9CB9] py-3`}
+                        key={cell.id}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
 			</Fragment>
 		);
 	});

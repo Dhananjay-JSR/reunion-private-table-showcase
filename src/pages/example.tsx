@@ -10,7 +10,7 @@ const example = () => {
 		},
 		{
 			key: 'alert',
-			title: 'alert',
+			title: 'Alerts',
 		},
 		{
 			key: 'delivery_date',
@@ -236,11 +236,8 @@ const example = () => {
 				column={col}
 				data={data}
 				options={{
-					columnSortable: true,
-					rowDND: true,
-					toggleColumns: true,
-					columnSplitting: true,
-					stickyHeaders: true,
+					// stickyHeaders: true,
+					// groupHeader: true,
 				}}
 			/>
 		</PageLayout>

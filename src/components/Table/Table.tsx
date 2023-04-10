@@ -13,6 +13,7 @@ import ToggleComponent from './ToggleComponent';
 import SingleTable from './SingleTable/SingleTable';
 import MultipleTables from './MultipleTables/MultipleTables';
 import { CSVLink, CSVDownload } from 'react-csv';
+import GroupSelector from './GroupSelector';
 
 export function IndeterminateCheckbox({
 	indeterminate,
@@ -66,8 +67,11 @@ type TableProps = {
 		rowDND?: boolean;
 		columnSplitting?: boolean;
 		stickyHeaders?: boolean;
+		groupHeader ?: boolean;
 	};
 };
+
+
 
 /**
  * Props for options:
@@ -84,11 +88,17 @@ type TableProps = {
  */
 
 const Table = ({ heading, column, data, options }: TableProps) => {
+
+	const [bak , setBak] = React.useState<any>(column);
+	console.log(bak)
+
+	const [TabularColumn, setTabularColumn] = React.useState<any>(column);
+
 	const ColumnHelper = createColumnHelper<typeof data[0]>();
 	// console.log(da);
 	// @ts-ignore
 	// Grouping column headers if their keys match
-	const columnData = column.reduce((acc, curr) => {
+	const columnData = TabularColumn.reduce((acc, curr) => {
 		// this is the column data
 		if (curr.headerGroup) {
 			// checks if the column has a header group
@@ -189,12 +199,20 @@ const Table = ({ heading, column, data, options }: TableProps) => {
 		// console.log('row', table.getPreFilteredRowModel().rows);
 	});
 
+	// useEffect(()=>{
+	// 	console.log('column',TabularColumn);
+	// },[TabularColumn])
+
+	
+
+	
+
 	return (
 		<TableWrapper heading={heading}>
 			<div className='hidden md:block select-none h-full'>
 				{/* Toggle columns */}
 				{toggleColumns ? <ToggleComponent table={table} /> : null}
-				<div className='flex justify-between items-center pt-5'>
+				{/* <div className='flex justify-between items-center pt-5'>
 					{columnSplitting ? (
 						<div className='su pt-5'>
 							<label>
@@ -254,9 +272,10 @@ const Table = ({ heading, column, data, options }: TableProps) => {
 							</span>
 						</CSVLink>
 					</div>
-				</div>
+				</div> */}
+				{options?.groupHeader&& <GroupSelector column={column} oldState={bak} tabularSetter={setTabularColumn}/>}
 				{/* <div className='overflow-x-scroll w-[50%] relative'> */}
-				<div className='overflow-x-scroll w-full relative'>
+				<div className=' h-96 overflow-y-scroll w-full relative'>
 					{columnSplitting && isSplit ? (
 						<MultipleTables
 							table={table}
