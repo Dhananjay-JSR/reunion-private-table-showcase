@@ -5,11 +5,13 @@ import { Table } from '@tanstack/react-table';
 import { useRowSelect } from '@table-library/react-table-library/select';
 
 const SingleTable = ({
+	showCheckbox,
 	table,
 	reorderRow,
 	options,
 	columnSplitting,
 }: {
+	showCheckbox?: boolean;
 	table: Table<any>;
 	reorderRow: any;
 	options: any;
@@ -24,6 +26,7 @@ const SingleTable = ({
 				!toggleColumns ? 'mt-10' : 'mt-4'
 			}`}>
 			<TableHeader
+			showCheckbox={showCheckbox}
 				table={table}
 				columnSortable={columnSortable}
 				columnSplitting={columnSplitting}
@@ -37,6 +40,7 @@ const SingleTable = ({
 					reorderRow={reorderRow}
 					rowDND={rowDND}
 					pinned={pinned}
+					showCheckbox={showCheckbox}
 				/>
 			</tbody>
 		</table>

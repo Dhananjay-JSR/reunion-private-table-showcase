@@ -6,7 +6,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import { getRowsElements } from './helpers';
 import { ChildComponentHandler, ReactTableRow } from '../Row';
 
-const MultipleTableRows = ({ type, table, reorderRow, rowDND }: { type: string, table: Table<any>, reorderRow: any, rowDND?: any }) => {
+const MultipleTableRows = ({ type, table, reorderRow, rowDND,showCheckbox }: { showCheckbox?: boolean;type: string, table: Table<any>, reorderRow: any, rowDND?: any }) => {
 
     table.getRowModel().rows.map((row: any, idx: number) => {
         console.log(getRowsElements(row, type), type);

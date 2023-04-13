@@ -64,7 +64,7 @@ const TableRows: FC<{ table: any; reorderRow: any }> = ({
 								<tr
 									className={`cursor-pointer `}
 									key={`index ${index}`}>
-									<td colSpan={2}>
+									<td colSpan={4}>
 										{/* // @ts-ignore */}
 										<div className='w-[85%]'>
 											<ChildComponentHandler
@@ -118,7 +118,7 @@ export const ReactTableRow: FC<{
 					undefined
 					? 'border-r ' // checks if it is the last column of the group and the next column is not a group
 					: ' '
-				} pl-4 border-[#7A9CB9] py-3`}
+				} pl-4 border-gray-600 py-3`}
 			key={cell.id}>
 			<td className='flex h-[100%]'>
 				<div className='flex items-center'>

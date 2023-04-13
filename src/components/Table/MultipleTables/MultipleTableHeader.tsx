@@ -83,11 +83,11 @@ const MultipleTableHeader = ({
 													onClick:
 														header.column.getToggleSortingHandler(),
 												}}>
-												{flexRender(
-													header.column.columnDef
-														.header,
-													header.getContext()
-												)}
+												{header.isPlaceholder ? null : flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )
+                                                }
 												{{
 													asc: ' 🔼',
 													desc: ' 🔽',

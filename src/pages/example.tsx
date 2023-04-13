@@ -7,18 +7,27 @@ const example = () => {
 		{
 			key: 'alert_date',
 			title: 'Alert Date',
+			headerGroup: 'Hrp1',
+			headerGrp: 'Grp2'
 		},
 		{
 			key: 'alert',
-			title: 'Alerts',
+			title: 'alert',
+			headerGroup: 'Hrp2',
+			headerGrp: 'Grp2'
 		},
 		{
 			key: 'delivery_date',
 			title: 'Delivery Date',
+			headerGroup: 'Hrp1',
+			headerGrp: 'Grp2'
+	
 		},
 		{
 			key: 'date',
 			title: 'Date',
+			headerGroup: 'Hrp2',
+			headerGrp: 'Grp2'
 		},
 		{
 			key: 'delivery_status',
@@ -236,8 +245,15 @@ const example = () => {
 				column={col}
 				data={data}
 				options={{
-					// stickyHeaders: true,
 					// groupHeader: true,
+					
+					// columnSortable: true,
+					// showCheckbox: true,
+					// rowDND: true,
+					// toggleColumns: true,
+					// columnSplitting: true,
+					// stickyHeaders: true,
+
 				}}
 			/>
 		</PageLayout>

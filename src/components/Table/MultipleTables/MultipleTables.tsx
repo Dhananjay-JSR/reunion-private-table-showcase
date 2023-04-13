@@ -4,12 +4,14 @@ import MultipleTableRows from './MultipleTableRows';
 import MultipleTableHeader from './MultipleTableHeader';
 
 const MultipleTables = ({
+	showCheckbox,
 	columnSortable,
 	table,
 	reorderRow,
 	rowDND,
 	stickyHeaders,
 }: {
+	showCheckbox?: boolean;
 	columnSortable: any;
 	table: any;
 	reorderRow: any;
@@ -42,9 +44,11 @@ const MultipleTables = ({
 								columnSortable={columnSortable}
 								type={typeOfTable}
 								stickyHeaders={stickyHeaders}
+								
 							/>
 							{/* @ts-ignore */}
 							<MultipleTableRows
+								showCheckbox={showCheckbox}
 								table={table}
 								type={typeOfTable}
 								reorderRow={reorderRow}
