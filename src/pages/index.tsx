@@ -3,6 +3,7 @@ import { ContentBuilder } from "../components/ContentBuilder";
 import { Portal } from "../components/portal/Portal";
 import { SearchPanel } from "../components/portal/SearchBox";
 import { AdvancedFilter } from "../FiltersComponent";
+import SVGEmbed from "../components/CustomComponent/SVGEmbed";
 
 const Divider = ({ children }: { children: React.ReactNode }) => {
   return <div className="lg:grid   lg:grid-cols-2">{children}</div>;
@@ -60,7 +61,7 @@ const DummyContentRender = () => {
         Type="Cause List"
         subHead="Rustomjee Uptown Urbania"
         Head="Court Number 5, MahaREAT"
-        subTitle1="Ninad Dere vs John Deo, John Doe, Ninad Dere, Ninad Dere"
+        subTitle1="Ninad Dere vs John Deo"
         subTitle2="Appeal # A51700001179"
         tag="26 Dec 22, 11:00AM"
       />
@@ -126,20 +127,27 @@ const AdvanceCalenderPicker = ({ title }: { title: string }) => {
     <div className="mb-5">
       <div className="mb-4 text-lg">{title}</div>
       <div className="flex mt-3 justify-between text-[#A7A7A7] w-full">
-        <div className="border flex px-2 py-2 justify-between  2xl:w-48  rounded-md w-36">
+        <div className="border flex px-2 py-2 justify-between   rounded-md   md:w-32 lg:w-36 xl:w-40 2xl:w-48">
           FROM
-          <img src="https://strapi.web3p.in/uploads/calendar2_date_74c3bc3c74.svg?updated_at=2023-01-18T09:21:42.789Z" />
+          <SVGEmbed src="/uploads/calendar2_date_74c3bc3c74.svg" className="fill-primary h-6 w-6"  />
+          {/* <img src="https://strapi.web3p.in/uploads/calendar2_date_74c3bc3c74.svg?updated_at=2023-01-18T09:21:42.789Z" /> */}
         </div>
-        <div className="border flex px-2 py-2 justify-between  2xl:w-48 rounded-md w-36">
+        <div className="border flex px-2 py-2 justify-between  rounded-md    md:w-32 lg:w-36 xl:w-40 2xl:w-48">
           TO
-          <img src="https://strapi.web3p.in/uploads/calendar2_date_74c3bc3c74.svg?updated_at=2023-01-18T09:21:42.789Z" />
+          <SVGEmbed src="/uploads/calendar2_date_74c3bc3c74.svg" className="fill-primary h-6 w-6"  />
         </div>
       </div>
     </div>
   );
 };
 
-const AdvanceOptionInput = ({ title, allowBottomOverlay }: { title: string, allowBottomOverlay?: boolean }) => {
+const AdvanceOptionInput = ({
+  title,
+  allowBottomOverlay,
+}: {
+  title: string;
+  allowBottomOverlay?: boolean;
+}) => {
   const [overlay, setOverlay] = React.useState(false);
   const [filter_type, setFilterType] = React.useState<
     "contains" | "does not contains"
@@ -175,61 +183,86 @@ const AdvanceOptionInput = ({ title, allowBottomOverlay }: { title: string, allo
               setBackDropvisible(!BackDropvisible);
             }
             setOverlay(!overlay);
-
           }}
           className="inline-flex relative items-center gap-2 text-sm ml-2 text-primary"
         >
-          {overlay && (
-            allowBottomOverlay ? <>
-              <Portal BackDropvisible={BackDropvisible} setBackDropVisible={setBackDropvisible}>
-                {(closing, setClosing) => (
-                  <>
-                    {/* <SearchPanel
+          {overlay &&
+            (allowBottomOverlay ? (
+              <>
+                <Portal
+                  BackDropvisible={BackDropvisible}
+                  setBackDropVisible={setBackDropvisible}
+                >
+                  {(closing, setClosing) => (
+                    <>
+                      {/* <SearchPanel
             placeholderText="Name your Alert"
             closing={closing}
             setClosing={setClosing}
             >
             Give this alert a name
           </SearchPanel> */}
-                    <div className={`fixed bottom-0 h-28 ${closing ? `md:scale-75  md:translate-y-0 translate-y-48 opacity-0` : ``} w-full bg-white rounded-t-lg p-5`}>
-                      <button onClick={()=>{
-                        setClosing(true)
-                        setFilterType((prev) => "contains");
-                      }} className={`${filter_type == "contains" ? "text-black" : "text-secondary"} block text-lg mb-2`}>
-                      contains
-                    </button>
-                      <button onClick={()=>{
-                         setClosing(true)
-                         setFilterType((prev) => "does not contains");
-                      }} className={`${filter_type == "does not contains" ? "text-black" : "text-secondary"} block text-lg`}>
-                        does not contains
-                      </button>
-                    </div>
-                  </>
-                )}
-              </Portal></> : <div
+                      <div
+                        className={`fixed bottom-0 h-40 ${
+                          closing
+                            ? `md:scale-75  md:translate-y-0 translate-y-48 opacity-0`
+                            : ``
+                        } w-full bg-white rounded-t-lg p-5 pt-7`}
+                      >
+                        <button
+                          onClick={() => {
+                            setClosing(true);
+                            setFilterType((prev) => "contains");
+                          }}
+                          className={`${
+                            filter_type == "contains"
+                              ? "text-black"
+                              : "text-secondary"
+                          } block text-lg mb-2`}
+                        >
+                          contains
+                        </button>
+                        <button
+                          onClick={() => {
+                            setClosing(true);
+                            setFilterType((prev) => "does not contains");
+                          }}
+                          className={`${
+                            filter_type == "does not contains"
+                              ? "text-black"
+                              : "text-secondary"
+                          } block text-lg`}
+                        >
+                          does not contains
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </Portal>
+              </>
+            ) : (
+              <div
                 ref={modalRef}
                 className="absolute text-black rounded-md border-[#CACACA] border top-full py-1   bg-white w-max shadow-xl px-4"
               >
-              <button
-                onClick={() => {
-                  setFilterType((prev) => "contains");
-                }}
-                className="my-1 hover:text-primary hover:transition-all transition-all"
-              >
-                contains
-              </button>
-              <button
-                onClick={() => {
-                  setFilterType((prev) => "does not contains");
-                }}
-                className="my-1 block  hover:text-primary hover:transition-all transition-all"
-              >
-                does not contains
-              </button>
-            </div>
-
-          )}
+                <button
+                  onClick={() => {
+                    setFilterType((prev) => "contains");
+                  }}
+                  className="my-1 w-full hover:text-primary text-left hover:transition-all transition-all"
+                >
+                  contains
+                </button>
+                <button
+                  onClick={() => {
+                    setFilterType((prev) => "does not contains");
+                  }}
+                  className="my-1 block  hover:text-primary hover:transition-all transition-all"
+                >
+                  does not contains
+                </button>
+              </div>
+            ))}
 
           {filter_type}
           <img src="https://strapi.web3p.in/uploads/chevron_down_5d05db4669.svg?updated_at=2023-01-18T09:21:20.603Z" />
@@ -252,7 +285,7 @@ const SideButton = ({
       onClick={() => {
         onClick && onClick(children);
       }}
-      className="pl-7 w-full pr-4 py-4 flex text-left items-center xl:w-80  justify-between"
+      className="pl-7 w-full pr-4 py-4 flex text-left items-center xl:w-52 2xl:w-72  justify-between"
     >
       {children}
       <img src="https://strapi.web3p.in/uploads/chevron_right_4f2156d4d3.svg" />
@@ -276,8 +309,11 @@ const EntityOption = ({ fnClick }: { fnClick?: (value: any) => any }) => (
   </div>
 );
 
-const AdvanceFilterPanel = ({ allowBottomOverlay }: { allowBottomOverlay?: boolean }) => {
-
+const AdvanceFilterPanel = ({
+  allowBottomOverlay,
+}: {
+  allowBottomOverlay?: boolean;
+}) => {
   return (
     <div className="pt-3 w-full ">
       <div className=" pb-7 border-b px-7">
@@ -291,21 +327,35 @@ const AdvanceFilterPanel = ({ allowBottomOverlay }: { allowBottomOverlay?: boole
         <AdvanceCalenderPicker title="Date of Hearing" />
         <AdvanceCalenderPicker title="Last Date of Hearing" />
         <AdvanceCalenderPicker title="Date of Cause List Publication" />
-        <AdvanceOptionInput allowBottomOverlay={allowBottomOverlay} title="Stage" />
-        <AdvanceOptionInput allowBottomOverlay={allowBottomOverlay} title="Court" />
-        <AdvanceOptionInput allowBottomOverlay={allowBottomOverlay} title="Advocate Name" />
-        <AdvanceOptionInput allowBottomOverlay={allowBottomOverlay} title="Promoter Name" />
+        <AdvanceOptionInput
+          allowBottomOverlay={allowBottomOverlay}
+          title="Stage"
+        />
+        <AdvanceOptionInput
+          allowBottomOverlay={allowBottomOverlay}
+          title="Court"
+        />
+        <AdvanceOptionInput
+          allowBottomOverlay={allowBottomOverlay}
+          title="Advocate Name"
+        />
+        <AdvanceOptionInput
+          allowBottomOverlay={allowBottomOverlay}
+          title="Promoter Name"
+        />
       </div>
     </div>
   );
 };
 
-const BottomApplyPanel = ({onClick}:{onClick?:()=>any}) => {
+const BottomApplyPanel = ({ onClick }: { onClick?: () => any }) => {
   return (
     <div className="w-full h-16  fixed z-20 bg-white bottom-0 rounded-lg border flex">
       <button className="text-secondary  w-full text-xl">Clear</button>
       <div className="bg-[#EEEEEE] my-auto w-1 h-[60%]"></div>
-      <button onClick={onClick} className="text-xl w-full text-primary">Apply</button>
+      <button onClick={onClick} className="text-xl w-full text-primary">
+        Apply
+      </button>
     </div>
   );
 };
@@ -396,14 +446,20 @@ function App() {
                         <div className="mb-20">
                           <AdvanceFilterPanel allowBottomOverlay />{" "}
                         </div>{" "}
-                        <BottomApplyPanel onClick={()=>{
-                          setFilterType(selectedEntity)
-                        }} />
+                        <BottomApplyPanel
+                          onClick={() => {
+                            setFilterType(selectedEntity);
+                          }}
+                        />
                       </>
                     )}
                   </>
                 ) : (
-                  <><DummyContentRender/></>
+                  <>
+                    <div className="px-4">
+                      <DummyContentRender />
+                    </div>
+                  </>
                 )}
               </div>
               <div className="lg:block hidden">
