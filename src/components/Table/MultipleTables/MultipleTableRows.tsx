@@ -67,7 +67,7 @@ const MultipleTableRows = ({ type, table, reorderRow, rowDND,showCheckbox }: { s
                                 <tr
                                     className={`cursor-pointer `}
                                     key={`index ${index}`}>
-                                    <td colSpan={2}>
+                                    <td colSpan={3}>
                                         {/* // @ts-ignore */}
                                         <div className='w-[85%]'>
                                             <ChildComponentHandler

@@ -127,15 +127,15 @@ const AdvanceCalenderPicker = ({ title }: { title: string }) => {
     <div className="mb-5">
       <div className="mb-4 text-lg">{title}</div>
       <div className="flex mt-3 justify-between text-[#A7A7A7] w-full">
-        <div className="border flex px-2 py-2 justify-between   rounded-md   md:w-32 lg:w-36 xl:w-40 2xl:w-48">
+        <button className="border flex px-2 py-2 justify-between   rounded-md  w-32  md:w-32 lg:w-36 xl:w-40 2xl:w-48">
           FROM
           <SVGEmbed src="/uploads/calendar2_date_74c3bc3c74.svg" className="fill-primary h-6 w-6"  />
           {/* <img src="https://strapi.web3p.in/uploads/calendar2_date_74c3bc3c74.svg?updated_at=2023-01-18T09:21:42.789Z" /> */}
-        </div>
-        <div className="border flex px-2 py-2 justify-between  rounded-md    md:w-32 lg:w-36 xl:w-40 2xl:w-48">
+        </button>
+        <button className="border flex px-2 py-2 justify-between  rounded-md   w-32  md:w-32 lg:w-36 xl:w-40 2xl:w-48">
           TO
           <SVGEmbed src="/uploads/calendar2_date_74c3bc3c74.svg" className="fill-primary h-6 w-6"  />
-        </div>
+        </button>
       </div>
     </div>
   );
@@ -294,7 +294,7 @@ const SideButton = ({
 };
 
 const EntityOption = ({ fnClick }: { fnClick?: (value: any) => any }) => (
-  <div className=" pt-3 text-xl h-fit border-r border-b ">
+  <div className=" pt-3  lg:text-lg  xl:text-xl h-fit border-r border-b ">
     <div className="pl-7 font-medium py-4 ">Entities</div>
     <div className="text-[#314250]">
       <SideButton onClick={fnClick}>Cause List</SideButton>
