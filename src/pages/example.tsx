@@ -237,12 +237,15 @@ const example = () => {
 				column={col}
 				data={data}
 				options={{
-					// groupHeader: true,
-					
+					groupHeader: true,
+					downloadCSV:true,
+					columnSplitting: true,
+					showCheckbox: true,
+					stickyHeaders: true,
 					columnSortable: true,
 					// showCheckbox: true,
-					// rowDND: true,
-					// toggleColumns: true,
+					rowDND: true,
+					toggleColumns: true,
 					// columnSplitting: true,
 					// stickyHeaders: true,
 

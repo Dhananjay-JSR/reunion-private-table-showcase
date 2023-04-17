@@ -84,11 +84,11 @@ const TableHeader = ({
                                             <div
                                                 // Uncomment this to Add sort by column feature
                                                 {...{
-                                                    className: columnSortable
+                                                    className: columnSortable && index != 0
                                                         ? 'cursor-pointer select-none'
                                                         : '',
                                                     onClick:
-                                                        header.column.getToggleSortingHandler(),
+                                                    index != 0?header.column.getToggleSortingHandler():null,
                                                 }}>
                                                 {header.isPlaceholder ? null : flexRender(
                                                     header.column.columnDef.header,
@@ -105,7 +105,7 @@ const TableHeader = ({
                                         }
                                         {!header.isPlaceholder &&
                                             header.column.getCanPin() &&
-                                            columnSplitting && (
+                                            columnSplitting&& index != 0 && (
                                                 <div className='flex gap-1 justify-left'>
                                                     {header.column.getIsPinned() !==
                                                         'left' ? (

@@ -207,7 +207,7 @@ const AdvanceOptionInput = ({
                           closing
                             ? `md:scale-75  md:translate-y-0 translate-y-48 opacity-0`
                             : ``
-                        } w-full bg-white rounded-t-lg p-5 pt-7`}
+                        } w-full bg-white space-y-7 rounded-t-lg p-5 pt-7`}
                       >
                         <button
                           onClick={() => {

@@ -52,7 +52,7 @@ const TableRows: FC<{
 
 						{rowDND&&<button className='mr-2' ref={dragRef}><SVGEmbed className='fill-primary' src='/uploads/hand_index_thumb_f48c1db9ab.svg' /></button>}
 						{showCheckbox&&<div
-							className=''
+							className='mr-4'
 							onClick={() => {
 								console.log(row.getIsSelected());
 							}}>
@@ -153,7 +153,7 @@ export const ReactTableRow: FC<{
 					undefined
 					? 'border-r ' // checks if it is the last column of the group and the next column is not a group
 					: ' '
-			} pl-4 border-gray-200 py-3`}
+			} ml-4 pl-4 border-gray-200 py-3`}
 			key={cell.id}>
 			<div className='flex h-[100%]'>
 				<div className='flex items-center'>
