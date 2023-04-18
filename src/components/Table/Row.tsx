@@ -44,7 +44,7 @@ const TableRows: FC<{
 					className={`border-b ${isDragging ? 'bg-gray-100' : ''}`}>
 					{(rowDND || showCheckbox) && (
 						<td
-							className='flex pt-5 pl-5'
+							className='flex pt-3 pl-5'
 							ref={dropRef}
 							style={{
 								width: '70px',
