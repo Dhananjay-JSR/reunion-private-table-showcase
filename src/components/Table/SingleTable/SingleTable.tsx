@@ -17,6 +17,7 @@ const SingleTable = ({
 	options: any;
 	columnSplitting: any;
 }) => {
+	console.log('options', options);
 	const { columnSortable, toggleColumns, rowDND, stickyHeaders } =
 		options || {};
 	const pinned = 0;
@@ -26,7 +27,7 @@ const SingleTable = ({
 				!toggleColumns ? 'mt-10' : 'mt-4'
 			}`}>
 			<TableHeader
-			showCheckbox={showCheckbox}
+				showCheckbox={showCheckbox}
 				table={table}
 				columnSortable={columnSortable}
 				columnSplitting={columnSplitting}

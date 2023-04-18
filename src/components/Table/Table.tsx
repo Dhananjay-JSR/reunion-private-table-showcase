@@ -1,9 +1,11 @@
 import {
-    createColumnHelper,
-    getCoreRowModel,
-    getSortedRowModel,
-    SortingState,
-    useReactTable,
+	createColumnHelper,
+	getCoreRowModel,
+	getGroupedRowModel,
+	getSortedRowModel,
+	GroupingState,
+	SortingState,
+	useReactTable,
 } from '@tanstack/react-table';
 import React, { HTMLProps, useEffect, useRef } from 'react';
 import { DndProvider } from 'react-dnd';
@@ -16,62 +18,61 @@ import { CSVLink, CSVDownload } from 'react-csv';
 import GroupSelector from './GroupSelector';
 
 export function IndeterminateCheckbox({
-    indeterminate,
-    className = '',
-    ...rest
+	indeterminate,
+	className = '',
+	...rest
 }: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
-    const ref = React.useRef<HTMLInputElement>(null!);
+	const ref = React.useRef<HTMLInputElement>(null!);
 
-    React.useEffect(() => {
-        if (typeof indeterminate === 'boolean') {
-            ref.current.indeterminate = !rest.checked && indeterminate;
-        }
-    }, [ref, indeterminate]);
+	React.useEffect(() => {
+		if (typeof indeterminate === 'boolean') {
+			ref.current.indeterminate = !rest.checked && indeterminate;
+		}
+	}, [ref, indeterminate]);
 
-    return (
-        <input
-            type='checkbox'
-            ref={ref}
-            className={className + ' cursor-pointer'}
-            {...rest}
-        />
-    );
+	return (
+		<input
+			type='checkbox'
+			ref={ref}
+			className={className + ' cursor-pointer'}
+			{...rest}
+		/>
+	);
 }
 
 const TableWrapper = ({
-    heading,
-    children,
+	heading,
+	children,
 }: {
-    heading?: string | undefined;
-    children: any;
+	heading?: string | undefined;
+	children: any;
 }) => {
-    return (
-        <div className='select-none'>
-            {heading && (
-                <h1 className='text-xl font-semibold text-gray-900 px-5 pt-5 md:px-0 md:pt-0'>
-                    {heading}
-                </h1>
-            )}
-            <DndProvider backend={HTML5Backend}>{children}</DndProvider>
-        </div>
-    );
+	return (
+		<div className='select-none'>
+			{heading && (
+				<h1 className='text-xl font-semibold text-gray-900 px-5 pt-5 md:px-0 md:pt-0'>
+					{heading}
+				</h1>
+			)}
+			<DndProvider backend={HTML5Backend}>{children}</DndProvider>
+		</div>
+	);
 };
 
 type TableProps = {
-    heading?: string | undefined;
-    column: any;
-    data: any;
-    options?: {
-        downloadCSV?: boolean;
-        columnSortable?: boolean;
-        toggleColumns?: boolean;
-        rowDND?: boolean;
-        columnSplitting?: boolean;
-        stickyHeaders?: boolean;
-        showCheckbox?: boolean;
-        groupHeader?: boolean;
-
-    };
+	heading?: string | undefined;
+	column: any;
+	data: any;
+	options?: {
+		downloadCSV?: boolean;
+		columnSortable?: boolean;
+		toggleColumns?: boolean;
+		rowDND?: boolean;
+		columnSplitting?: boolean;
+		stickyHeaders?: boolean;
+		showCheckbox?: boolean;
+		groupHeader?: boolean;
+	};
 };
 
 /**
@@ -89,12 +90,10 @@ type TableProps = {
  */
 
 const Table = ({ heading, column, data, options }: TableProps) => {
-    const [TabularColumn, setTabularColumn] = React.useState<any>(column);
-    const ColumnHelper = createColumnHelper<typeof data[0]>();
+	const [TabularColumn, setTabularColumn] = React.useState<any>(column);
+	const ColumnHelper = createColumnHelper<typeof data[0]>();
 
-
-
-    /*
+	/*
 
         // console.log(da);
     // @ts-ignore
@@ -148,222 +147,234 @@ const Table = ({ heading, column, data, options }: TableProps) => {
     //ORIGINAL IMPLEMENTATION
     */
 
+	// @ts-ignore
+	let columnData = TabularColumn.reduce((acc, curr) => {
+		// this is the column data
+		if (curr.headerGroup) {
+			// checks if the column has a header group
+			// @ts-ignore
+			const group = acc.find((el) => el.id === curr.headerGroup); // checks if the header group already exists
+			if (group) {
+				// if the header group already exists
+				// @ts-ignore
+				group.columns.push(
+					ColumnHelper.accessor(curr.key, {
+						// adds the column to the header group
+						id: curr.key,
+						header: curr.title,
+					})
+				);
+			} else {
+				// if the header group does not exist
+				acc.push(
+					// @ts-ignore
+					ColumnHelper.group({
+						id: curr.headerGroup,
+						header: curr.headerGroup,
+						columns: [
+							ColumnHelper.accessor(curr.key, {
+								id: curr.key,
+								header: curr.title,
+							}),
+						],
+					})
+				);
+			}
+		} else {
+			// if the column does not have a header group
+			acc.push(
+				// @ts-ignore
+				ColumnHelper.accessor(curr.key, {
+					id: curr.key,
+					header: curr.title,
+				})
+			);
+		}
+		return acc;
+	}, []);
 
-    // @ts-ignore
-    let columnData = TabularColumn.reduce((acc, curr) => {
-        // this is the column data
-        if (curr.headerGroup) {
-            // checks if the column has a header group
-            // @ts-ignore
-            const group = acc.find((el) => el.id === curr.headerGroup); // checks if the header group already exists
-            if (group) {
-                // if the header group already exists
-                // @ts-ignore
-                group.columns.push(
-                    ColumnHelper.accessor(curr.key, {
-                        // adds the column to the header group
-                        id: curr.key,
-                        header: curr.title,
-                    })
-                );
-            } else {
-                // if the header group does not exist
-                acc.push(
-                    // @ts-ignore
-                    ColumnHelper.group({
-                        id: curr.headerGroup,
-                        header: curr.headerGroup,
-                        columns: [
-                            ColumnHelper.accessor(curr.key, {
-                                id: curr.key,
-                                header: curr.title,
-                            }),
-                        ],
-                    })
-                );
-            }
-        } else {
-            // if the column does not have a header group
-            acc.push(
-                // @ts-ignore
-                ColumnHelper.accessor(curr.key, {
-                    id: curr.key,
-                    header: curr.title,
-                })
-            );
-        }
-        return acc;
-    }, []);
+	console.log(columnData);
 
-    console.log(columnData);
+	const [rows, setRows] = React.useState([...data]);
+	const [sorting, setSorting] = React.useState<SortingState>([]);
+	const [columnVisibility, setColumnVisibility] = React.useState({});
+	const [columnPinning, setColumnPinning] = React.useState({});
+	const [isSplit, setIsSplit] = React.useState(false);
+	const { columnSortable, toggleColumns, rowDND, columnSplitting } =
+		options || {};
+	const [rowSelection, setRowSelection] = React.useState({});
+	const [globalFilter, setGlobalFilter] = React.useState('');
+	const [grouping, setGrouping] = React.useState<GroupingState>([]);
 
+	const table = useReactTable({
+		data: rows,
+		columns: columnData,
+		state: {
+			sorting,
+			columnVisibility,
+			columnPinning,
+			rowSelection,
+			grouping,
+		},
+		getCoreRowModel: getCoreRowModel(),
 
-    const [rows, setRows] = React.useState([...data]);
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnVisibility, setColumnVisibility] = React.useState({});
-    const [columnPinning, setColumnPinning] = React.useState({});
-    const [isSplit, setIsSplit] = React.useState(false);
-    const { columnSortable, toggleColumns, rowDND, columnSplitting } =
-        options || {};
-    const [rowSelection, setRowSelection] = React.useState({});
-    const [globalFilter, setGlobalFilter] = React.useState('');
+		onSortingChange: columnSortable ? setSorting : undefined,
+		getSortedRowModel: columnSortable ? getSortedRowModel() : undefined,
+		onColumnVisibilityChange: toggleColumns
+			? setColumnVisibility
+			: undefined,
 
-    const table = useReactTable({
-        data: rows,
-        columns: columnData,
-        state: {
-            sorting,
-            columnVisibility,
-            columnPinning,
-            rowSelection,
-        },
-        getCoreRowModel: getCoreRowModel(),
+		// Subcomponent
+		getExpandedRowModel: getSortedRowModel(),
+		getRowCanExpand: (row) => true,
+		onColumnPinningChange: setColumnPinning,
 
-        onSortingChange: columnSortable ? setSorting : undefined,
-        getSortedRowModel: columnSortable ? getSortedRowModel() : undefined,
-        onColumnVisibilityChange: toggleColumns
-            ? setColumnVisibility
-            : undefined,
+		// Row selection
+		enableRowSelection: true,
+		onRowSelectionChange: setRowSelection,
 
-        // Subcomponent
-        getExpandedRowModel: getSortedRowModel(),
-        getRowCanExpand: (row) => true,
-        onColumnPinningChange: setColumnPinning,
+		getGroupedRowModel: getGroupedRowModel(),
 
-        // Row selection
-        enableRowSelection: true,
-        onRowSelectionChange: setRowSelection,
+		// Debugging
+		debugTable: true,
+		// debugHeaders: true,
+		// debugColumns: true,
+	});
 
-        // Debugging
-        debugTable: true,
-        // debugHeaders: true,
-        // debugColumns: true,
-    });
+	const reorderRow = (draggedRowIndex: number, targetRowIndex: number) => {
+		data.splice(
+			targetRowIndex,
+			0,
+			data.splice(draggedRowIndex, 1)[0] as any
+		);
+		setRows([...data]);
+	};
 
-    const reorderRow = (draggedRowIndex: number, targetRowIndex: number) => {
-        data.splice(
-            targetRowIndex,
-            0,
-            data.splice(draggedRowIndex, 1)[0] as any
-        );
-        setRows([...data]);
-    };
+	useEffect(() => {
+		// console.log('columnData', columnData);
+		// console.log('row', table.getPreFilteredRowModel().rows);
+	});
+	return (
+		<TableWrapper heading={heading}>
+			<div className='hidden md:block select-none h-full'>
+				{/* Toggle columns */}
+				{toggleColumns ? <ToggleComponent table={table} /> : null}
+				<div className='flex justify-between items-center pt-5'>
+					{columnSplitting ? (
+						<div className='su pt-5'>
+							<label>
+								<input
+									type='checkbox'
+									checked={isSplit}
+									onChange={(e) => {
+										if (table.getIsSomeColumnsPinned())
+											setIsSplit(e.target.checked);
+										else {
+											setIsSplit(false);
+											alert('pin some columns first');
+										}
+									}}
+								/>{' '}
+								Split Mode
+							</label>
+						</div>
+					) : null}
+					<div>
+						{options?.showCheckbox && (
+							<span>
+								{Object.keys(rowSelection).length} of{' '}
+								{table.getPreFilteredRowModel().rows.length}{' '}
+								Total Rows Selected
+							</span>
+						)}
+						{options?.downloadCSV && (
+							<CSVLink
+								filename={'my-file.csv'}
+								className='btn btn-primary'
+								target='_blank'
+								data={[
+									...table
+										.getPreFilteredRowModel()
+										.rows.filter((row) =>
+											row.getIsSelected()
+										)
+										.map((row) => row._valuesCache),
+								]}>
+								<span
+									className='block'
+									onClick={() => {
+										console.log([
+											...table
+												.getPreFilteredRowModel()
+												.rows.filter((row) =>
+													row.getIsSelected()
+												)
+												.map((row) => row._valuesCache),
+										]);
+										table
+											.getPreFilteredRowModel()
+											.rows.filter((row) =>
+												row.getIsSelected()
+											);
+										// 	.forEach((data) =>
+										// 		console.log(data.original)
+										// 	);
+									}}>
+									Download Selected
+								</span>
+							</CSVLink>
+						)}
+					</div>
+				</div>
+				{/* <div className='overflow-x-scroll w-[50%] relative'> */}
+				{options?.groupHeader && (
+					<GroupSelector
+						column={column}
+						tabularSetter={setTabularColumn}
+					/>
+				)}
 
-    useEffect(() => {
-        // console.log('columnData', columnData);
-        // console.log('row', table.getPreFilteredRowModel().rows);
-    });
+				<div className='overflow-x-scroll w-full relative'>
+					{columnSplitting && isSplit ? (
+						<MultipleTables
+							table={table}
+							columnSortable={columnSortable}
+							reorderRow={reorderRow}
+							rowDND={rowDND}
+							stickyHeaders={options?.stickyHeaders}
+							showCheckbox={options?.showCheckbox}
+						/>
+					) : (
+						<SingleTable
+							table={table}
+							reorderRow={reorderRow}
+							options={options}
+							columnSplitting={columnSplitting}
+							showCheckbox={options?.showCheckbox}
+						/>
+					)}
+				</div>
+			</div>
 
-    return (
-        <TableWrapper heading={heading}>
-            <div className='hidden md:block select-none h-full'>
-                {/* Toggle columns */}
-                {toggleColumns ? <ToggleComponent table={table} /> : null}
-                <div className='flex justify-between items-center pt-5'>
-                    {columnSplitting ? (
-                        <div className='su pt-5'>
-                            <label>
-                                <input
-                                    type='checkbox'
-                                    checked={isSplit}
-                                    onChange={(e) => {
-                                        if (table.getIsSomeColumnsPinned())
-                                            setIsSplit(e.target.checked);
-                                        else {
-                                            setIsSplit(false);
-                                            alert('pin some columns first');
-                                        }
-                                    }}
-                                />{' '}
-                                Split Mode
-                            </label>
-                        </div>
-                    ) : null}
-                    <div>
-                        {options?.showCheckbox && <span>
-                            {Object.keys(rowSelection).length} of{' '}
-                            {table.getPreFilteredRowModel().rows.length} Total
-                            Rows Selected
-                        </span>}
-                        {options?.downloadCSV && <CSVLink
-                            filename={'my-file.csv'}
-                            className='btn btn-primary'
-                            target='_blank'
-                            data={[
-                                ...table
-                                    .getPreFilteredRowModel()
-                                    .rows.filter((row) => row.getIsSelected())
-                                    .map((row) => row._valuesCache),
-                            ]}>
-                            <span
-                                className='block'
-                                onClick={() => {
-                                    console.log([
-                                        ...table
-                                            .getPreFilteredRowModel()
-                                            .rows.filter((row) =>
-                                                row.getIsSelected()
-                                            )
-                                            .map((row) => row._valuesCache),
-                                    ]);
-                                    table
-                                        .getPreFilteredRowModel()
-                                        .rows.filter((row) =>
-                                            row.getIsSelected()
-                                        );
-                                    // 	.forEach((data) =>
-                                    // 		console.log(data.original)
-                                    // 	);
-                                }}>
-                                Download Selected
-                            </span>
-                        </CSVLink>}
-                    </div>
-                </div>
-                {/* <div className='overflow-x-scroll w-[50%] relative'> */}
-                {options?.groupHeader && <GroupSelector column={column} tabularSetter={setTabularColumn} />}
-
-                <div className='overflow-x-scroll w-full relative'>
-                    {columnSplitting && isSplit ? (
-                        <MultipleTables
-                            table={table}
-                            columnSortable={columnSortable}
-                            reorderRow={reorderRow}
-                            rowDND={rowDND}
-                            stickyHeaders={options?.stickyHeaders}
-                            showCheckbox={options?.showCheckbox}
-                        />
-                    ) : (
-                        <SingleTable
-                            table={table}
-                            reorderRow={reorderRow}
-                            options={options}
-                            columnSplitting={columnSplitting}
-                            showCheckbox={options?.showCheckbox}
-                        />
-                    )}
-                </div>
-            </div>
-
-            {/* Mobile devices */}
-            <div className='md:hidden py-10 px-5'>
-                <div className='bg-white border rounded-md  shadow overflow-hidden md:rounded-md '>
-                    <ul role='list' className='divide-y divide-gray-200'>
-                        {data.map((row: any, index: number) => {
-                            // data of the table (array of objects)
-                            return (
-                                <MobileViewer
-                                    row={row}
-                                    column={column}
-                                    key={index}
-                                />
-                            );
-                        })}
-                    </ul>
-                </div>
-            </div>
-        </TableWrapper>
-    );
+			{/* Mobile devices */}
+			<div className='md:hidden py-10 px-5'>
+				<div className='bg-white border rounded-md  shadow overflow-hidden md:rounded-md '>
+					<ul role='list' className='divide-y divide-gray-200'>
+						{data.map((row: any, index: number) => {
+							// data of the table (array of objects)
+							return (
+								<MobileViewer
+									row={row}
+									column={column}
+									key={index}
+								/>
+							);
+						})}
+					</ul>
+				</div>
+			</div>
+		</TableWrapper>
+	);
 };
 
 export default Table;

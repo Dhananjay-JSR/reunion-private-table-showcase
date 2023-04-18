@@ -19,8 +19,8 @@ const TableRows: FC<{
 	reorderRow?: any;
 	rowDND?: boolean;
 	pinned?: number;
-    showCheckbox?: boolean;
-}> = ({ table, reorderRow, rowDND, pinned,showCheckbox }) => {
+	showCheckbox?: boolean;
+}> = ({ table, reorderRow, rowDND, pinned, showCheckbox }) => {
 	return table.getRowModel().rows.map((row: any, idx: number) => {
 		const [, dropRef] = useDrop({
 			accept: 'row',
@@ -42,31 +42,43 @@ const TableRows: FC<{
 					ref={previewRef} //previewRef could go here
 					style={{ opacity: isDragging ? 0.5 : 1 }}
 					className={`border-b ${isDragging ? 'bg-gray-100' : ''}`}>
-					{(rowDND||showCheckbox)&&<td
-						className='flex p-5'
-						ref={dropRef}
-						style={{
-							width: '50px',
-							textAlign: 'center',
-						}}>
-
-						{rowDND&&<button className='mr-2' ref={dragRef}><SVGEmbed className='fill-primary' src='/uploads/hand_index_thumb_f48c1db9ab.svg' /></button>}
-						{showCheckbox&&<div
-							className='mr-4'
-							onClick={() => {
-								console.log(row.getIsSelected());
+					{(rowDND || showCheckbox) && (
+						<td
+							className='flex pt-5 pl-5'
+							ref={dropRef}
+							style={{
+								width: '70px',
+								textAlign: 'center',
 							}}>
-							<input
-								type='checkbox'
-								{...{
-									checked: row.getIsSelected(),
-									disabled: !row.getCanSelect(),
-									indeterminate: row.getIsSomeSelected(),
-									onChange: row.getToggleSelectedHandler(),
-								}}
-							/>
-						</div>}
-					</td>}
+							{rowDND && (
+								<button className='mr-2' ref={dragRef}>
+									<SVGEmbed
+										className='fill-primary'
+										src='/uploads/hand_index_thumb_f48c1db9ab.svg'
+									/>
+								</button>
+							)}
+							{showCheckbox && (
+								<div
+									className=''
+									onClick={() => {
+										// console.log(row.getIsSelected());
+									}}>
+									<input
+										type='checkbox'
+										{...{
+											checked: row.getIsSelected(),
+											disabled: !row.getCanSelect(),
+											indeterminate:
+												row.getIsSomeSelected(),
+											onChange:
+												row.getToggleSelectedHandler(),
+										}}
+									/>
+								</div>
+							)}
+						</td>
+					)}
 					{row
 						.getVisibleCells()
 						// @ts-ignore
